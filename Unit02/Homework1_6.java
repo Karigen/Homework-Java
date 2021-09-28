@@ -10,7 +10,7 @@ public class Homework1_6 {
 
 }
 
-class Myclass2 {
+class MyClass2 {
     private int one=1;
     private static int two=2;
     
@@ -27,21 +27,21 @@ class Myclass2 {
     }
     
     public static void setTwo(int two) {
-        Myclass2.two = two;
+        MyClass2.two = two;
     }
 }
 
 class MainClass{
     public static void main(String[] args) {
-	Myclass2 m2=new Myclass2();
+	MyClass2 m2=new MyClass2();
 	
 	Scanner scanner=new Scanner(System.in);
 	
 	m2.setOne(scanner.nextInt());
-	Myclass2.setTwo(scanner.nextInt());
+	MyClass2.setTwo(scanner.nextInt());
 	
 	System.out.println("one is "+m2.getOne());
-	System.out.println("two is "+Myclass2.getTwo());
+	System.out.println("two is "+MyClass2.getTwo());
 	
 	scanner.close();
     }

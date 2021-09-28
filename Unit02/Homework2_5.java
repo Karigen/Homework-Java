@@ -35,8 +35,8 @@ class GuessNumber1{
     
     public int getNumber() {
 	var scanner =new Scanner(System.in);
-	int x=scanner.nextInt();
+	int g=scanner.nextInt();
 	scanner.close();
-	return x;
+	return g;
     }
 }

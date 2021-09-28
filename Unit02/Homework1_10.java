@@ -23,14 +23,14 @@ public class Homework1_10 {
 	Integer I1=1,I2=2;
 	
 	System.out.println("before");
-	System.out.println("I1="+I1.toString());
-	System.out.println("I2="+I2.toString());
+	System.out.println("I1="+I1);
+	System.out.println("I2="+I2);
 	
 	swap2(I1, I2);
 	
 	System.out.println("after");
-	System.out.println("I1="+I1.toString());
-	System.out.println("I2="+I2.toString());
+	System.out.println("I1="+I1);
+	System.out.println("I2="+I2);
     }
     
     public static void swap(int i1, int i2) {
@@ -46,7 +46,7 @@ public class Homework1_10 {
 	I2=temp;
     }
     
-    private static void swap2(Integer I1, Integer I2) {
+    public static void swap2(Integer I1, Integer I2) {
         try {
             Field field = Integer.class.getDeclaredField("value");
             field.setAccessible(true);
