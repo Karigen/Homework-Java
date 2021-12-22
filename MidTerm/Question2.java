@@ -2,6 +2,7 @@ package MidTerm;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -32,14 +33,18 @@ public class Question2 extends Application {
 	});
 
 	p.setOnMouseClicked(e -> {
-	    double mX = e.getX();
-	    double mY = e.getY();
 
-	    if (mX > r.getX() && mY > r.getY() && mX < r.getX() + r.getWidth() && mY < r.getY() + r.getHeight()) {
-		System.out.println("in");
-	    } else {
-		System.out.println("out");
+	    if (e.getButton().equals(MouseButton.PRIMARY)) {
+		double mX = e.getX();
+		double mY = e.getY();
+
+		if (mX > r.getX() && mY > r.getY() && mX < r.getX() + r.getWidth() && mY < r.getY() + r.getHeight()) {
+		    System.out.println("in");
+		} else {
+		    System.out.println("out");
+		}
 	    }
+
 	});
 
 	p.getChildren().add(r);

@@ -20,7 +20,7 @@ public class Homework05 {
 	    oos = new ObjectOutputStream(new FileOutputStream("test5"));
 	    List list = new LinkedList();
 	    list.add("ABCDE");
-	    list.add(new Integer(5));
+	    list.add(5);
 	    oos.writeObject(list);
 	    oos.flush();
 

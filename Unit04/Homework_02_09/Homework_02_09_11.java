@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Homework_02_09_11 extends Application {
-    ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));// var不能用在成员变量上，疑似只能用在局部变量上
+//    ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));// var不能用在成员变量上，疑似只能用在局部变量上
     double cnfX = 0.0;
     double cnfY = 0.0;
 
@@ -26,7 +26,7 @@ public class Homework_02_09_11 extends Application {
 	AnchorPane root = new AnchorPane();
 	root.setPrefWidth(500);
 	root.setPrefHeight(200);
-	root.setStyle("-fx-background-color:#EEEE09");
+	root.setStyle("-fx-background-color:#EEEE00");
 
 	HBox hb = new HBox();
 	hb.setAlignment(Pos.CENTER);
@@ -34,7 +34,9 @@ public class Homework_02_09_11 extends Application {
 	hb.prefWidthProperty().bind(root.widthProperty());
 	hb.setPrefHeight(100);
 	AnchorPane.setBottomAnchor(hb, 0.0);
-	hb.setStyle("-fx-background-color:#EE1209");
+	hb.setStyle("-fx-background-color:#EE0000");
+
+	ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));
 
 	var btnEnlarge = new Button("Enlarge");
 	btnEnlarge.setOnAction(e -> {
@@ -56,20 +58,16 @@ public class Homework_02_09_11 extends Application {
 	    AnchorPane.setLeftAnchor(cnf, e.getSceneX() - cnfX - cnf.getTranslateX());
 	    AnchorPane.setTopAnchor(cnf, e.getSceneY() - cnfY - cnf.getTranslateY());
 	});
-	root.widthProperty().addListener(e->{
-	    cnf.fitWidthProperty().bind(root.widthProperty().divide(4));
+	root.widthProperty().addListener(o -> {
+	    cnf.setFitWidth(root.getWidth() / 4);
 	});
-	root.heightProperty().addListener(e->{
-	    cnf.fitHeightProperty().bind(root.heightProperty().divide(4));
+	root.heightProperty().addListener(o -> {
+	    cnf.setFitHeight(root.getHeight() / 4);
 	});
 	KeyValue kv1 = new KeyValue(cnf.translateXProperty(), 0);
-	KeyFrame kf1 = new KeyFrame(Duration.seconds(0), "kf1", e -> {
-
-	}, kv1);
+	KeyFrame kf1 = new KeyFrame(Duration.seconds(0), kv1);
 	KeyValue kv2 = new KeyValue(cnf.translateXProperty(), root.getPrefWidth() / 4 * 3);
-	KeyFrame kf2 = new KeyFrame(Duration.seconds(5), "kf2", e -> {
-
-	}, kv2);
+	KeyFrame kf2 = new KeyFrame(Duration.seconds(5), kv2);
 	FadeTransition ft = new FadeTransition(Duration.seconds(0.1), cnf);
 	ft.setFromValue(0);
 	ft.setToValue(1);
@@ -79,8 +77,7 @@ public class Homework_02_09_11 extends Application {
 	Timeline timeline = new Timeline();
 	timeline.getKeyFrames().addAll(kf1, kf2);
 	timeline.play();
-	hb.getChildren().add(btnEnlarge);
-	hb.getChildren().add(btnShrink);
+	hb.getChildren().addAll(btnEnlarge, btnShrink);
 
 	root.getChildren().add(hb);
 	primaryStage.setScene(new Scene(root));

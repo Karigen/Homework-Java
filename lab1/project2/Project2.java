@@ -52,7 +52,6 @@ public class Project2 {
 
 }
 
-// 这个类由于之前没有给除任何项目要求,所以我也不知道怎么写,所以是借鉴的
 abstract class GeometricObject {
     private String color;
     private boolean isFilled;

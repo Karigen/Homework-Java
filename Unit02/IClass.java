@@ -35,17 +35,25 @@ public class IClass {
     public static void main(String[] args) {
 	
 	//Task 1
-	SimpleCircle c1=new SimpleCircle();
-	SimpleCircle c2=new SimpleCircle();
-	SimpleCircle c3=new SimpleCircle();
+	SimpleCircle c1=new SimpleCircle(1);
+	SimpleCircle c2=new SimpleCircle(2);
+	SimpleCircle c3=new SimpleCircle(3);
 	
 	System.out.println("the number of the instances is "+SimpleCircle.getNumberOfObjects());
 	
-	//Task 2
-	SimpleCircle[] ca=new SimpleCircle[2];
+	System.out.println();
 	
-	ca[0]=new SimpleCircle(1);
-	ca[1]=new SimpleCircle(2);
+	//Task 2
+	SimpleCircle[] ca=new SimpleCircle[3];
+	
+	ca[0]=c1;
+	c1=null;
+	
+	ca[1]=c2;
+	c2=null;
+	
+	ca[2]=c3;
+	c3=null;
 	
 	for (int i = 0; i < ca.length; i++) {
 	    System.out.println("simplecircle"+(i+1)+"'s area is "+ca[i].getArea());
@@ -55,10 +63,6 @@ public class IClass {
 	
 	// gc
 	
-	c1=null;
-	c2=null;
-	c3=null;
-
 	for (int i = 0; i < ca.length; i++) {
 
 	    ca[i] = null;
@@ -69,8 +73,11 @@ public class IClass {
 
 	    System.runFinalization();
 	    
-	    }
+	}
 	
+	System.out.println();
+	
+	System.out.println("after gc");
 	System.out.println("the number of the instances is "+SimpleCircle.getNumberOfObjects());
 	    
     }
@@ -83,13 +90,16 @@ class SimpleCircle{
     
     private static int count=0;
     
-    public SimpleCircle(){
+    {//实例代码块，在实例化使调用
 	count++;
+    }
+    
+    public SimpleCircle(){
+	
     }
     
     public SimpleCircle(double radius) {
 	this.radius=radius;
-	count++;
     }
     
     public static int getNumberOfObjects() {

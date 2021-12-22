@@ -26,7 +26,7 @@ public class Homework06 {
 	    ps = connection.prepareStatement(sql);
 
 	    rs = ps.executeQuery();
-
+	    
 	    while (rs.next()) {
 		System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3));
 	    }

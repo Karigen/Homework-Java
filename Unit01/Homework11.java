@@ -1,5 +1,7 @@
 package Unit01;
 
+/*
+
 import com.sin.java.plot.Plot;
 
 public class Homework11 {
@@ -15,5 +17,7 @@ public class Homework11 {
 	}
 	Plot.plot(y1, "-b");
     }
-
+    
 }
+
+*/

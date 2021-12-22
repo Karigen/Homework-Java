@@ -19,6 +19,8 @@ public class Homework10 {
 	    }
 	    if (!isChange) {
 		break;
+	    } else {
+		isChange=false;
 	    }
 	}
     }

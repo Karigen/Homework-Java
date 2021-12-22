@@ -12,12 +12,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Homework_02_07 extends Application {
-    ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));// var不能用在成员变量上，疑似只能用在局部变量上
+//    ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));// var不能用在成员变量上，疑似只能用在局部变量上
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 	GridPane root = new GridPane();
 	root.setAlignment(Pos.CENTER);
+	
+	ImageView cnf = new ImageView(new Image("/Unit04/cnf/cnf.jpg"));
 
 	root.add(cnf, 1, 0);
 
