@@ -42,12 +42,20 @@ class KidA implements Runnable {
 	    while (true) {
 		String option = dis.readUTF();
 		if ("开始".equals(option)) {
+		    // 睡发
+		    long sleepTime = random.nextInt(1000);
+		    Thread.sleep(sleepTime);
+		    String sleepTimeStr = sleepTime + "";
+		    dos.writeUTF(sleepTimeStr);
+
+		    // 选项
 		    dos.writeUTF(choice[random.nextInt(3)]);
 		} else {
 		    break;
 		}
 	    }
 
+	    dos.flush();
 	    socket.shutdownOutput();
 
 	} catch (Exception e) {
@@ -94,6 +102,7 @@ class KidB implements Runnable {
 	DatagramPacket receivePacket = null;
 	String[] choice = { "石头", "剪刀", "布" };
 	Random random = new Random();
+	InetSocketAddress dest = new InetSocketAddress("127.0.0.1", 7777);
 
 	try {
 	    datagramSocket = new DatagramSocket(8888);
@@ -103,9 +112,16 @@ class KidB implements Runnable {
 		datagramSocket.receive(receivePacket);
 		String option = new String(receivePacket.getData(), 0, receivePacket.getLength());
 		if ("开始".equals(option)) {
+		    // 睡发
+		    long sleepTime = random.nextInt(1000);
+		    Thread.sleep(sleepTime);
+		    String sleepTimeStr = sleepTime + "";
+		    sendPacket = new DatagramPacket(sleepTimeStr.getBytes(), 0, sleepTimeStr.getBytes().length, dest);
+		    datagramSocket.send(sendPacket);
+
+		    // 发选项
 		    String res = choice[random.nextInt(3)];
-		    sendPacket = new DatagramPacket(res.getBytes(), 0, res.getBytes().length,
-			    new InetSocketAddress("127.0.0.1", 7777));
+		    sendPacket = new DatagramPacket(res.getBytes(), 0, res.getBytes().length, dest);
 		    datagramSocket.send(sendPacket);
 		} else {
 		    break;

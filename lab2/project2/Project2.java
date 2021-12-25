@@ -38,14 +38,18 @@ public class Project2 {
 
 class Server extends Thread {// 后来发现原来还得是以服务端为主,客户端为辅,服务端NB
 
-    private Random random;//
-    public boolean isRun;
+    private Random random;
+    private boolean isRun;
     private Client c1;
     private Client c2;
 
     public Server(Random random) {
 	this.random = random;
 	this.isRun = true;
+    }
+
+    public boolean isRun() {
+	return isRun;
     }
 
     public void setC1(Client c1) {
@@ -63,33 +67,31 @@ class Server extends Thread {// 后来发现原来还得是以服务端为主,客户端为辅,服务端
 	    count = (int) (random.nextDouble() * 10);
 	}
 
+	System.out.println("\tThread A\t\t\t\tThread B");
+	System.out.println("Round\tSleep\tRandom\t\tPoints\t\tSleep\tRandom\t\tPoints");
+	System.out.println("\ttime\tcharacter\tobtained\ttime\tcharacter\tobtained");
+	System.out.println("--------------------------------------------------------------------------------");
+
 	for (int i = 0; i < count;) {
-	    if (c1.isFinished && c2.isFinished) {
-		if (c1.result > c2.result) {
-		    System.out.printf("c1:睡眠时间:%d\t字符:%c\t得分:%d\t", c1.sleepTime, c1.result, 2);
-		    c1.score += 2;
-		    System.out.printf("c2:睡眠时间:%d\t字符:%c\t得分:%d\t", c2.sleepTime, c2.result, 0);
-		    c2.score += 0;// 优雅
-		    System.out.println();// 优雅
-		    i++;
-		} else if (c1.result < c2.result) {
-		    System.out.printf("c1:睡眠时间:%d\t字符:%c\t得分:%d\t", c1.sleepTime, c1.result, 0);
-		    c1.score += 0;// 优雅
-		    System.out.printf("c2:睡眠时间:%d\t字符:%c\t得分:%d\t", c2.sleepTime, c2.result, 2);
-		    c2.score += 2;
-		    System.out.println();// 优雅
-		    i++;
+	    if (c1.isFinished() && c2.isFinished()) {
+		i++;
+		if (c1.getResult() > c2.getResult()) {
+		    System.out.printf("%d\t%d\t%c\t\t%d\t\t", i, c1.getSleepTime(), c1.getResult(), 2);
+		    c1.setScore(c1.getScore() + 2);
+		    System.out.printf("%d\t%c\t\t%d\n", c2.getSleepTime(), c2.getResult(), 0);
+		} else if (c1.getResult() < c2.getResult()) {
+		    System.out.printf("%d\t%d\t%c\t\t%d\t\t", i, c1.getSleepTime(), c1.getResult(), 0);
+		    System.out.printf("%d\t%c\t\t%d\n", c2.getSleepTime(), c2.getResult(), 2);
+		    c2.setScore(c2.getScore() + 2);
 		} else {
-		    System.out.printf("c1:睡眠时间:%d\t字符:%c\t得分:%d\t", c1.sleepTime, c1.result, 1);
-		    c1.score += 1;
-		    System.out.printf("c2:睡眠时间:%d\t字符:%c\t得分:%d\t", c2.sleepTime, c2.result, 1);
-		    c2.score += 1;
-		    System.out.println();// 优雅
-		    i++;
+		    System.out.printf("%d\t%d\t%c\t\t%d\t\t", i, c1.getSleepTime(), c1.getResult(), 1);
+		    c1.setScore(c1.getScore() + 1);
+		    System.out.printf("%d\t%c\t\t%d\n", c2.getSleepTime(), c2.getResult(), 1);
+		    c2.setScore(c2.getScore() + 1);
 		}
 
-		c1.isFinished = false;
-		c2.isFinished = false;
+		c1.setFinished(false);
+		c2.setFinished(false);
 		synchronized (this) {
 		    this.notifyAll();
 		}
@@ -109,13 +111,15 @@ class Server extends Thread {// 后来发现原来还得是以服务端为主,客户端为辅,服务端
 	    this.notifyAll();
 	}
 
+	System.out.println("--------------------------------------------------------------------------------");
+
 	// 输出最终结果
-	if (c1.score > c2.score) {
-	    System.out.println("胜利者是c1");
-	} else if (c1.score < c2.score) {
-	    System.out.println("胜利者是c2");
+	if (c1.getScore() > c2.getScore()) {
+	    System.out.println("A is the winner");
+	} else if (c1.getScore() < c2.getScore()) {
+	    System.out.println("B is the winner");
 	} else {
-	    System.out.println("平手了");
+	    System.out.printf("%d : %d draw", c1.getScore(), c2.getScore());
 	}
     }
 
@@ -124,11 +128,11 @@ class Server extends Thread {// 后来发现原来还得是以服务端为主,客户端为辅,服务端
 class Client implements Runnable {
 
     private Server server;
-    private Random random;//
-    public char result;//
-    public boolean isFinished;
-    public int score;//
-    public long sleepTime;
+    private Random random;
+    private char result;
+    private boolean isFinished;
+    private int score;
+    private long sleepTime;
 
     public Client(Server server, Random random) {
 	this.server = server;
@@ -139,9 +143,33 @@ class Client implements Runnable {
 	this.sleepTime = -1;
     }
 
+    public char getResult() {
+	return result;
+    }
+
+    public boolean isFinished() {
+	return isFinished;
+    }
+
+    public void setFinished(boolean isFinished) {
+	this.isFinished = isFinished;
+    }
+
+    public int getScore() {
+	return score;
+    }
+
+    public void setScore(int score) {
+	this.score = score;
+    }
+
+    public long getSleepTime() {
+	return sleepTime;
+    }
+
     @Override
     public void run() {
-	while (server.isRun) {
+	while (server.isRun()) {
 	    try {
 		sleepTime = random.nextInt(1000);
 		Thread.sleep(sleepTime);

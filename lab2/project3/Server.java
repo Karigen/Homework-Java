@@ -8,6 +8,8 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Server implements Runnable {
@@ -30,7 +32,12 @@ public class Server implements Runnable {
 	DataOutputStream dos = null;
 	DatagramPacket sendPacket = null;
 	DatagramPacket receivePacket = null;
+	InetSocketAddress dest = new InetSocketAddress("127.0.0.1", 8888);
 	String[] choice = { "石头", "剪刀", "布" };
+	Map<String, String> choices = new HashMap<String, String>();
+	choices.put("石头", "rock\t");
+	choices.put("剪刀", "scissors");
+	choices.put("布", "paper\t");
 	int scoreA = 0;
 	int scoreB = 0;
 
@@ -48,16 +55,25 @@ public class Server implements Runnable {
 		count = (int) (random.nextDouble() * 10);
 	    }
 
+	    System.out.println("\tThread A\t\t\t\tThread B");
+	    System.out.println("Round\tSleep\tRandom\t\tPoints\t\tSleep\tRandom\t\tPoints");
+	    System.out.println("\ttime\tselection\tobtained\ttime\tselection\tobtained");
+	    System.out.println("--------------------------------------------------------------------------------");
+
 	    for (int i = 0; i < count;) {
 		dos.writeUTF("开始");
-		sendPacket = new DatagramPacket("开始".getBytes(), 0, "开始".getBytes().length,
-			new InetSocketAddress("127.0.0.1", 8888));
+		sendPacket = new DatagramPacket("开始".getBytes(), 0, "开始".getBytes().length, dest);
 		datagramSocket.send(sendPacket);
 		receivePacket = new DatagramPacket(new byte[1024], 1024);
 
+		String kidASleepTime = dis.readUTF();
+		datagramSocket.receive(receivePacket);
+		String kidBSleepTime = new String(receivePacket.getData(), 0, receivePacket.getLength());
+		receivePacket = new DatagramPacket(new byte[1024], 1024);
+
+		String kidA = dis.readUTF();
 		datagramSocket.receive(receivePacket);
 		String kidB = new String(receivePacket.getData(), 0, receivePacket.getLength());
-		String kidA = dis.readUTF();
 
 		int resA = -1;
 		int resB = -1;
@@ -72,42 +88,43 @@ public class Server implements Runnable {
 		    }
 		}
 
+		i++;
+
 		// 比较
 		if (resA == resB) {// 平手
-		    System.out.printf("KidA出:%s\tKidB出:%s\tscoreA:%d\tscoreB:%d\t", kidA, kidB, 1, 1);
-		    System.out.println();
+		    System.out.printf("%d\t%sms\t%s\t%d\t\t%sms\t%s\t%d\n", i, kidASleepTime, choices.get(kidA), 1,
+			    kidBSleepTime, choices.get(kidB), 1);
 		    scoreA += 1;
 		    scoreB += 1;
 		} else if (resA == (resB - 1 + choice.length) % 3) {// A赢
-		    System.out.printf("KidA出:%s\tKidB出:%s\tscoreA:%d\tscoreB:%d\t", kidA, kidB, 2, 0);
-		    System.out.println();
+		    System.out.printf("%d\t%sms\t%s\t%d\t\t%sms\t%s\t%d\n", i, kidASleepTime, choices.get(kidA), 2,
+			    kidBSleepTime, choices.get(kidB), 0);
 		    scoreA += 2;
-		    scoreB += 0;
 		} else {// B赢
-		    System.out.printf("KidA出:%s\tKidB出:%s\tscoreA:%d\tscoreB:%d\t", kidA, kidB, 0, 2);
-		    System.out.println();
-		    scoreA += 0;
+		    System.out.printf("%d\t%sms\t%s\t%d\t\t%sms\t%s\t%d\n", i, kidASleepTime, choices.get(kidA), 0,
+			    kidBSleepTime, choices.get(kidB), 2);
 		    scoreB += 2;
 		}
-		i++;
 	    }
 
 	    // 发送结束标志
 	    dos.writeUTF("结束");
-	    sendPacket = new DatagramPacket("结束".getBytes(), 0, "结束".getBytes().length,
-		    new InetSocketAddress("127.0.0.1", 8888));
+	    sendPacket = new DatagramPacket("结束".getBytes(), 0, "结束".getBytes().length, dest);
 	    datagramSocket.send(sendPacket);
 
 	    // shutdown?
+	    dos.flush();
 	    socket.shutdownOutput();
+
+	    System.out.println("--------------------------------------------------------------------------------");
 
 	    // 输出
 	    if (scoreA > scoreB) {
-		System.out.println("Kid A获胜");
+		System.out.println("A is the winner");
 	    } else if (scoreA < scoreB) {
-		System.out.println("Kid B获胜");
+		System.out.println("B is the winner");
 	    } else {
-		System.out.println("平手");
+		System.out.printf("%d : %d draw", scoreA, scoreB);
 	    }
 
 	} catch (Exception e) {
